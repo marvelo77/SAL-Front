@@ -1,0 +1,120 @@
+<template>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Estado</th>
+            <th>Color</th>
+            <th>Talle</th>
+            <th>Peso</th>
+            <th>Dimensiones</th>
+            <th>Precio</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in filteredItems" :key="item.id">
+            <td>{{ item.codigo }}</td>
+            <td>{{ item.nombre }}</td>
+            <td>{{ item.estado }}</td>
+            <td>{{ item.color }}</td>
+            <td>{{ item.talle }}</td>
+            <td>{{ item.peso }}</td>
+            <td>{{ item.dimensiones }}</td>
+            <td>{{ item.precio }}</td>
+          </tr>
+        </tbody>
+      </table>
+  
+      <!-- Multiple selection -->
+      <div v-if="selectedItems.length > 0">
+        {{ selectedItems.length }} items selected.
+      </div>
+  
+      <!-- Sorting -->
+      <div class="sort">
+        Sort by:
+        <select v-model="sortBy">
+          <option value="codigo">Código</option>
+          <option value="nombre">Nombre</option>
+          <option value="estado">Estado</option>
+          <option value="color">Color</option>
+          <option value="talle">Talle</option>
+          <option value="peso">Peso</option>
+          <option value="dimensiones">Dimensiones</option>
+          <option value="precio">Precio</option>
+        </select>
+  
+        Order:
+        <select v-model="sortOrder">
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
+        </select>
+  
+        <!-- Search -->
+        Search:
+        <input type="text" v-model="searchTerm" />
+      </div>
+  
+    </div>
+  
+  </template>
+  
+  <script>
+  
+  export default {
+    data() {
+      return {
+        items: [
+          { codigo: "001", nombre: "Item 1", estado: "Activo", color: "Rojo", talle: "M", peso: "1kg", dimensiones: "10x10x10cm", precio: "$10" },
+          { codigo: "002", nombre: "Item 2", estado: "Inactivo", color: "Azul", talle: "L", peso: "2kg", dimensiones: "20x20x20cm", precio: "$20" },
+          { codigo: "003", nombre: "Item 3", estado: "Activo", color: "Verde", talle: "S", peso: "3kg", dimensiones: "30x30x30cm", precio: "$30" },
+          { codigo: "004", nombre: "Item 4", estado: "Inactivo", color: "Amarillo", talle: "XL", peso: "4kg", dimensiones: "40x40x40cm", precio: "$40" },
+        ],
+        selectedItems: [],
+        sortBy: "",
+        sortOrder: "",
+        searchTerm: "",
+      };
+    },
+  
+    computed: {
+      filteredItems() {
+        let items = this.items;
+  
+        // Search
+        if (this.searchTerm) {
+          items = items.filter((item) => {
+            return (
+              item.codigo.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+              item.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+              item.estado.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+              item.color.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+              item.talle.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+              item.peso.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+              item.dimensiones.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+              item.precio.toLowerCase().includes(this.searchTerm.toLowerCase())
+            );
+          });
+        }
+  
+        // Sorting
+        if (this.sortBy && this.sortOrder) {
+          items = items.sort((a, b) => {
+            let modifier = 1;
+            if (this.sortOrder === 'desc') modifier = -1;
+            if (a[this.sortBy] > b[this.sortBy]) return modifier;
+            if (a[this.sortBy] < b[this.sortBy]) return -modifier;
+            return 0;
+          });
+        }
+  
+        return items;
+      },
+    },
+  };
+  
+  </script>
+  
+  
